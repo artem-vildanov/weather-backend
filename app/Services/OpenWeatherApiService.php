@@ -7,7 +7,7 @@ use App\Repository\WeatherRepository;
 use stdClass;
 use Exception;
 
-class OpenWeatherApiService 
+class OpenWeatherApiService
 {
     public function __construct(private readonly WeatherRepository $weatherRepository) {}
 
@@ -29,14 +29,14 @@ class OpenWeatherApiService
         {
             $forecastsDtoGroup[] = $this->mapForecast($forecast);
         }
-        
+
         $this->weatherRepository->deleteWeatherData();
         $this->weatherRepository->insertWeatherData($forecastsDtoGroup);
-    } 
+    }
 
     private function fetchDataFromOpenWeather(): stdClass
     {
-        $url = 'https://api.openweathermap.org/data/2.5/forecast?lat=55.7231&lon=84.8861&appid=84805020d86bc2c126e436cb87fe6c67';
+        $url = 'https://api.openweathermap.org/data/2.5/forecast?lat=55.7231&lon=84.8861&appid=84805020d86bc2c126e436cb87fe6c67&units=metric';
 
         $response = file_get_contents($url);
 
