@@ -34,6 +34,8 @@ class OpenWeatherApiService
 
         $forecastData = array_merge($forecastData, $this->getFutureWeatherData());
 
+        Log::error($forecastData);
+
         return $forecastData;
     }
 

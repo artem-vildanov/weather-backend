@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Dto\ForecastDto;
 use App\Repository\WeatherRepository;
 use Carbon\Carbon;
+use DateTime;
 
 class ForecastService
 {
@@ -25,19 +26,36 @@ class ForecastService
     private function divideByDays(array $forecasts): array
     {
         $fullForecast = [];
-        $filterDate = Carbon::today();
+        $filterDate = $this->getCurrentDate();
 
         for ($dayNumber = 0; $dayNumber < ForecastService::FORECAST_DAYS; $dayNumber++) {
             $filterByDayCallable = function($forecast) use ($filterDate) {
-                $forecast = (array)$forecast;
-                return substr($forecast['datetime_text'], 0, 10) === $filterDate->format('d-m-Y');
+                $forecastDate = substr($forecast->datetime_text, 0, 10);
+                return $forecastDate === $filterDate;
             };
 
-            $dayForecast = (array)array_filter($forecasts, $filterByDayCallable);
+            $dayForecast = array_filter($forecasts, $filterByDayCallable);
             $fullForecast[] = array_values($dayForecast);
-            $filterDate->addDay();
+            $filterDate = $this->incrementDate($filterDate);
         }
 
         return $fullForecast;
+    }
+
+    private function getCurrentDate(): string
+    {
+        $hoursToAdd = 7;
+        $timestamp = time();
+        $currentDate = new DateTime();
+        $currentDate->setTimestamp($timestamp);
+        $currentDate->modify("+{$hoursToAdd} hours");
+        return $currentDate->format('d-m-Y');
+    }
+
+    private function incrementDate(string $dateString): string
+    {
+        $dateObject = DateTime::createFromFormat('d-m-Y', $dateString);
+        $dateObject->modify('+1 days');
+        return $dateObject->format('d-m-Y');
     }
 }
