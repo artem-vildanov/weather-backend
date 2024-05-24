@@ -18,26 +18,38 @@ class OpenWeatherApiService
 
     public function __construct(private readonly WeatherRepository $weatherRepository) {}
 
-    public function updateWeatherData(): void
+//    public function updateWeatherData(): void
+//    {
+//        $forecast = $this->getForecast();
+//        // Log::error($forecast);
+//        $this->weatherRepository->deleteWeatherData();
+//        $this->weatherRepository->insertWeatherData($forecast);
+//    }
+//    /** @return ForecastDto[] */
+
+    public function updateCurrentWeatherData(): void
     {
-        $forecast = $this->getForecast();
-        // Log::error($forecast);
-        $this->weatherRepository->deleteWeatherData();
-        $this->weatherRepository->insertWeatherData($forecast);
+        $this->weatherRepository->updateCurrentWeatherData((array)$this->getCurrentWeatherData());
     }
-    /** @return ForecastDto[] */
-    private function getForecast(): array
+
+    public function updateFutureWeatherData(): void
     {
-        /** @var ForecastDto[] */
-        $forecastData = [];
-        $forecastData[] = $this->getCurrentWeatherData();
-
-        $forecastData = array_merge($forecastData, $this->getFutureWeatherData());
-
-        Log::error($forecastData);
-
-        return $forecastData;
+        $this->weatherRepository->updateFutureWeather($this->getFutureWeatherData());
     }
+
+//    private function getForecast(): array
+//    {
+//        /** @var ForecastDto[] */
+//        $forecastData = [];
+//        $forecastData[] = $this->getCurrentWeatherData();
+//
+//        $forecastData = array_merge($forecastData, $this->getFutureWeatherData());
+//
+//        Log::error($forecastData);
+//
+//        return $forecastData;
+//    }
+
 
     private function getCurrentWeatherData(): ForecastDto
     {
@@ -83,7 +95,7 @@ class OpenWeatherApiService
         $forecastDto->temperature = $forecastObject->main->temp;
         $forecastDto->temperature_feels_like = $forecastObject->main->feels_like;
         $forecastDto->humidity = $forecastObject->main->humidity;
-        $forecastDto->pressure = $forecastObject->main->pressure;
+        $forecastDto->pressure = $forecastObject->main->pressure * 0.75;
         $forecastDto->wind_speed = $forecastObject->wind->speed;
         $forecastDto->created_at = (string)now();
 
