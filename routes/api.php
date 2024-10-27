@@ -16,3 +16,4 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/forecast', IndexController::class);
+Route::get('/test', [IndexController::class, 'test']);

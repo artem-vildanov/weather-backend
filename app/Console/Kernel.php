@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->command('app:update-current-weather-data')->everyMinute();
-        $schedule->command('app:update-future-weather-data')->everyFifteenMinutes();
+        $schedule->command('app:update-future-weather-data')->everyFiveMinutes();
 //        $schedule->command('app:update-weather-data')->everyMinute();
     }
 

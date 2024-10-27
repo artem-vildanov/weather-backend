@@ -18,38 +18,15 @@ class OpenWeatherApiService
 
     public function __construct(private readonly WeatherRepository $weatherRepository) {}
 
-//    public function updateWeatherData(): void
-//    {
-//        $forecast = $this->getForecast();
-//        // Log::error($forecast);
-//        $this->weatherRepository->deleteWeatherData();
-//        $this->weatherRepository->insertWeatherData($forecast);
-//    }
-//    /** @return ForecastDto[] */
-
     public function updateCurrentWeatherData(): void
     {
-        $this->weatherRepository->updateCurrentWeatherData((array)$this->getCurrentWeatherData());
+        $this->weatherRepository->updateCurrentWeatherData($this->getCurrentWeatherData());
     }
 
     public function updateFutureWeatherData(): void
     {
         $this->weatherRepository->updateFutureWeather($this->getFutureWeatherData());
     }
-
-//    private function getForecast(): array
-//    {
-//        /** @var ForecastDto[] */
-//        $forecastData = [];
-//        $forecastData[] = $this->getCurrentWeatherData();
-//
-//        $forecastData = array_merge($forecastData, $this->getFutureWeatherData());
-//
-//        Log::error($forecastData);
-//
-//        return $forecastData;
-//    }
-
 
     private function getCurrentWeatherData(): ForecastDto
     {
@@ -59,12 +36,13 @@ class OpenWeatherApiService
 
     /**
      * @return ForecastDto[]
+     * @throws Exception
      */
     private function getFutureWeatherData(): array
     {
         $futureWeatherData = $this->fetchWeatherData($this->FUTURE_FORECAST);
 
-        /** @var ForecastDto[] */
+        /** @var ForecastDto[] $forecastsDtoGroup */
         $forecastsDtoGroup = [];
 
         foreach($futureWeatherData->list as $forecast)
@@ -78,6 +56,7 @@ class OpenWeatherApiService
     private function fetchWeatherData(string $requestType): stdClass
     {
         $url = $this->BASE_URL . $requestType . $this->REQUEST_PARAMS;
+
         $response = file_get_contents($url);
 
         if ($response === false) {
@@ -91,13 +70,13 @@ class OpenWeatherApiService
     {
         $forecastDto = new ForecastDto();
 
-        $forecastDto->datetime_text = $this->formatDate($forecastObject->dt);
+        $forecastDto->datetimeText = $this->formatDate($forecastObject->dt);
         $forecastDto->temperature = $forecastObject->main->temp;
-        $forecastDto->temperature_feels_like = $forecastObject->main->feels_like;
+        $forecastDto->temperatureFeelsLike = $forecastObject->main->feels_like;
         $forecastDto->humidity = $forecastObject->main->humidity;
         $forecastDto->pressure = $forecastObject->main->pressure * 0.75;
-        $forecastDto->wind_speed = $forecastObject->wind->speed;
-        $forecastDto->created_at = (string)now();
+        $forecastDto->windSpeed = $forecastObject->wind->speed;
+        $forecastDto->createdAt = (string)now();
 
         return $forecastDto;
     }

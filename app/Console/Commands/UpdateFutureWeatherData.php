@@ -31,6 +31,8 @@ class UpdateFutureWeatherData extends Command
      */
     public function handle()
     {
+        Log::alert("update future weather started");
         $this->weatherService->updateFutureWeatherData();
+        Log::alert("update future weather ended");
     }
 }

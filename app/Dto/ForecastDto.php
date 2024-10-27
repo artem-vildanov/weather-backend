@@ -4,11 +4,24 @@ namespace App\Dto;
 
 class ForecastDto
 {
-    public string $datetime_text;
+    public string $datetimeText;
     public float $temperature;
-    public float $temperature_feels_like;
-    public float $wind_speed;
+    public float $temperatureFeelsLike;
+    public float $windSpeed;
     public int $humidity;
     public int $pressure;
-    public string $created_at;
+    public string $createdAt;
+
+    public function toArray(): array
+    {
+        return [
+            'datetime_text' => $this->datetimeText,
+            'temperature' => $this->temperature,
+            'temperature_feels_like' => $this->temperatureFeelsLike,
+            'wind_speed' => $this->windSpeed,
+            'humidity' => $this->humidity,
+            'pressure' => $this->pressure,
+            'created_at' => $this->createdAt
+        ];
+    }
 }
